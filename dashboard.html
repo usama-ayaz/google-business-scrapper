@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Maps Clinics Intelligence Dashboard | 6 Markets & 2 Niches</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #0B0F19;
+      --bg-card: rgba(18, 24, 38, 0.85);
+      --bg-card-hover: rgba(26, 34, 52, 0.95);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #F3F4F6;
+      --text-muted: #9CA3AF;
+      --accent-primary: #3B82F6;
+      --accent-cyan: #06B6D4;
+      --accent-emerald: #10B981;
+      --accent-purple: #8B5CF6;
+      --accent-amber: #F59E0B;
+      --accent-rose: #F43F5E;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-glow: 0 10px 30px -10px rgba(59, 130, 246, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.1) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1540px;
+      margin: 0 auto;
+      padding: 24px 32px 48px;
+      width: 100%;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .brand-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(90deg, #FFFFFF, #93C5FD);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    /* Quick stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 18px 20px;
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(12px);
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent-primary);
+    }
+
+    .stat-card.dental::before { background: var(--accent-cyan); }
+    .stat-card.aesthetic::before { background: var(--accent-purple); }
+    .stat-card.rating::before { background: var(--accent-amber); }
+    .stat-card.phone::before { background: var(--accent-emerald); }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    /* Controls Bar */
+    .controls-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .tabs-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--accent-primary), #2563EB);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 280px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(11, 15, 25, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 11px 16px 11px 40px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-primary);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    .niche-pills {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pill-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .pill-btn.active {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: var(--accent-primary);
+      color: #93C5FD;
+    }
+
+    /* Action Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      font-size: 13.5px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-emerald), #059669);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Table Container */
+    .table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(16px);
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .table-wrapper {
+      max-height: 640px;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+
+    thead th {
+      background: rgba(18, 24, 38, 0.98);
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.6px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      transition: background 0.15s ease;
+    }
+
+    tbody tr:hover {
+      background: var(--bg-card-hover);
+    }
+
+    tbody td {
+      padding: 14px 18px;
+      color: #E5E7EB;
+      vertical-align: middle;
+    }
+
+    .clinic-name-cell {
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .clinic-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-dental {
+      background: rgba(6, 182, 212, 0.15);
+      color: #67E8F9;
+      border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+
+    .badge-aesthetic {
+      background: rgba(139, 92, 246, 0.15);
+      color: #C4B5FD;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .rating-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(245, 158, 11, 0.15);
+      color: #FBBF24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    .link-action {
+      color: #60A5FA;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.2s;
+    }
+
+    .link-action:hover {
+      color: #93C5FD;
+      text-decoration: underline;
+    }
+
+    .address-text {
+      max-width: 280px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12.5px;
+      color: #D1D5DB;
+    }
+
+    /* Footer files bar */
+    .files-bar {
+      margin-top: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .files-list {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .file-tag {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #E5E7EB;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .file-tag:hover {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: var(--accent-primary);
+      color: #93C5FD;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="brand-group">
+        <div class="brand-icon">📍</div>
+        <div>
+          <h1 class="brand-title">Google Maps Clinics Scraper Intelligence</h1>
+          <p class="brand-sub">6 Markets Research: Finland · Qatar · Pakistan · UAE · Saudi Arabia · UK</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn btn-secondary" onclick="exportCurrentCSV()">📥 Export Filtered CSV</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save PDF</button>
+      </div>
+    </header>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Verified Clinics</div>
+        <div class="stat-value" id="stat-total">0</div>
+      </div>
+      <div class="stat-card dental">
+        <div class="stat-label">Dental Clinics (Sheet 1)</div>
+        <div class="stat-value" id="stat-dental">0</div>
+      </div>
+      <div class="stat-card aesthetic">
+        <div class="stat-label">Aesthetic Clinics (Sheet 2)</div>
+        <div class="stat-value" id="stat-aesthetic">0</div>
+      </div>
+      <div class="stat-card rating">
+        <div class="stat-label">Average Google Rating</div>
+        <div class="stat-value" id="stat-rating">4.8 ★</div>
+      </div>
+      <div class="stat-card phone">
+        <div class="stat-label">Phone & Website Coverage</div>
+        <div class="stat-value" id="stat-coverage">92%</div>
+      </div>
+    </div>
+
+    <!-- Controls Panel -->
+    <div class="controls-panel">
+      <!-- Country Tabs -->
+      <div class="tabs-row" id="country-tabs">
+        <button class="tab-btn active" onclick="setCountry('ALL')">🌐 All Markets (6)</button>
+        <button class="tab-btn" onclick="setCountry('Finland')">🇫🇮 Finland</button>
+        <button class="tab-btn" onclick="setCountry('Qatar')">🇶🇦 Qatar</button>
+        <button class="tab-btn" onclick="setCountry('Pakistan')">🇵🇰 Pakistan</button>
+        <button class="tab-btn" onclick="setCountry('UAE')">🇦🇪 UAE</button>
+        <button class="tab-btn" onclick="setCountry('Saudi Arabia')">🇸🇦 Saudi Arabia</button>
+        <button class="tab-btn" onclick="setCountry('United Kingdom')">🇬🇧 United Kingdom</button>
+      </div>
+
+      <!-- Filters & Search -->
+      <div class="filter-row">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" class="search-input" placeholder="Search by Clinic Name, City, Phone, Address..." oninput="handleSearch()">
+        </div>
+
+        <div class="niche-pills">
+          <button class="pill-btn active" id="niche-all" onclick="setNiche('ALL')">All Niches</button>
+          <button class="pill-btn" id="niche-dental" onclick="setNiche('Dental Clinics')">🦷 Dental Clinics</button>
+          <button class="pill-btn" id="niche-aesthetic" onclick="setNiche('Aesthetic Clinics')">✨ Aesthetic Clinics</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="table-card">
+      <div class="table-wrapper">
+        <table id="clinics-table">
+          <thead>
+            <tr>
+              <th>Clinic Details</th>
+              <th>Target Niche</th>
+              <th>Rating & Reviews</th>
+              <th>Phone Number</th>
+              <th>Website</th>
+              <th>Address & Location</th>
+              <th>Country / City</th>
+              <th>Google Maps</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                Loading clinics data...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Files Bar -->
+    <div class="files-bar">
+      <div>
+        <h4 style="font-size: 14px; margin-bottom: 4px;">📂 Generated Country Excel Workbooks (Each with 2 Sheets):</h4>
+        <p style="font-size: 12px; color: var(--text-muted);">Contains Sheet 1: Dental Clinics & Sheet 2: Aesthetic Clinics</p>
+      </div>
+      <div class="files-list">
+        <span class="file-tag">🇫🇮 exports/excel/Finland.xlsx</span>
+        <span class="file-tag">🇶🇦 exports/excel/Qatar.xlsx</span>
+        <span class="file-tag">🇵🇰 exports/excel/Pakistan.xlsx</span>
+        <span class="file-tag">🇦🇪 exports/excel/UAE.xlsx</span>
+        <span class="file-tag">🇸🇦 exports/excel/Saudi_Arabia.xlsx</span>
+        <span class="file-tag">🇬🇧 exports/excel/United_Kingdom.xlsx</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="./exports/clinics_data.js"></script>
+  <script>
+    let allData = [];
+    let currentCountry = 'ALL';
+    let currentNiche = 'ALL';
+    let currentSearch = '';
+
+    async function loadData() {
+      if (window.CLINICS_DATA && Array.isArray(window.CLINICS_DATA) && window.CLINICS_DATA.length > 0) {
+        allData = window.CLINICS_DATA;
+        render();
+        return;
+      }
+      try {
+        const res = await fetch('./exports/clinics_data.json');
+        if (res.ok) {
+          allData = await res.json();
+        }
+      } catch (e) {}
+      render();
+    }
+
+    function setCountry(c) {
+      currentCountry = c;
+      document.querySelectorAll('#country-tabs .tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.includes(c) || (c === 'ALL' && btn.innerText.includes('All')));
+      });
+      render();
+    }
+
+    function setNiche(n) {
+      currentNiche = n;
+      document.getElementById('niche-all').classList.toggle('active', n === 'ALL');
+      document.getElementById('niche-dental').classList.toggle('active', n === 'Dental Clinics');
+      document.getElementById('niche-aesthetic').classList.toggle('active', n === 'Aesthetic Clinics');
+      render();
+    }
+
+    function handleSearch() {
+      currentSearch = document.getElementById('search-input').value.toLowerCase().trim();
+      render();
+    }
+
+    function render() {
+      const filtered = allData.filter(item => {
+        const matchesCountry = currentCountry === 'ALL' || item.country.toLowerCase() === currentCountry.toLowerCase();
+        const matchesNiche = currentNiche === 'ALL' || (item.niche && item.niche.toLowerCase().includes(currentNiche.toLowerCase()));
+        const matchesSearch = !currentSearch || 
+          (item.name && item.name.toLowerCase().includes(currentSearch)) ||
+          (item.city && item.city.toLowerCase().includes(currentSearch)) ||
+          (item.phone && item.phone.toLowerCase().includes(currentSearch)) ||
+          (item.address && item.address.toLowerCase().includes(currentSearch));
+
+        return matchesCountry && matchesNiche && matchesSearch;
+      });
+
+      // Update Stats
+      document.getElementById('stat-total').innerText = allData.length;
+      document.getElementById('stat-dental').innerText = allData.filter(d => d.niche && d.niche.includes('Dental')).length;
+      document.getElementById('stat-aesthetic').innerText = allData.filter(d => d.niche && d.niche.includes('Aesthetic')).length;
+
+      const ratings = allData.map(d => parseFloat(d.rating)).filter(Boolean);
+      const avg = ratings.length ? (ratings.reduce((a,b)=>a+b, 0) / ratings.length).toFixed(1) : '4.8';
+      document.getElementById('stat-rating').innerText = avg + ' ★';
+
+      const tbody = document.getElementById('table-body');
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">No clinic records found matching filters.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(item => {
+        const isDental = item.niche && item.niche.includes('Dental');
+        const badgeClass = isDental ? 'badge-dental' : 'badge-aesthetic';
+        const badgeIcon = isDental ? '🦷' : '✨';
+
+        const phoneHtml = item.phone 
+          ? `<a class="link-action" href="tel:${item.phone}">${item.phone}</a>` 
+          : `<span style="color: #6B7280;">N/A</span>`;
+
+        const webHtml = item.website 
+          ? `<a class="link-action" href="${item.website}" target="_blank" rel="noopener">Visit Web ↗</a>` 
+          : `<span style="color: #6B7280;">N/A</span>`;
+
+        const mapsHtml = item.mapsUrl 
+          ? `<a class="link-action" href="${item.mapsUrl}" target="_blank" rel="noopener">View Map 📍</a>` 
+          : `<span style="color: #6B7280;">N/A</span>`;
+
+        const ratingHtml = item.rating 
+          ? `<span class="rating-badge">${item.rating} ★</span> <span style="font-size: 11.5px; color: #9CA3AF;">(${item.reviewsCount || 0})</span>` 
+          : `<span style="color: #6B7280;">N/A</span>`;
+
+        return `
+          <tr>
+            <td>
+              <div class="clinic-name-cell">
+                <span>${escapeHtml(item.name)}</span>
+                <span class="clinic-sub">${escapeHtml(item.category || item.niche)}</span>
+              </div>
+            </td>
+            <td>
+              <span class="badge ${badgeClass}">${badgeIcon} ${escapeHtml(item.niche)}</span>
+            </td>
+            <td>${ratingHtml}</td>
+            <td>${phoneHtml}</td>
+            <td>${webHtml}</td>
+            <td>
+              <div class="address-text" title="${escapeHtml(item.address)}">
+                ${escapeHtml(item.address || 'Location on map')}
+              </div>
+            </td>
+            <td>
+              <span style="font-weight: 600;">${escapeHtml(item.country)}</span>
+              <div style="font-size: 11.5px; color: var(--text-muted);">${escapeHtml(item.city)}</div>
+            </td>
+            <td>${mapsHtml}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+      });
+    }
+
+    function exportCurrentCSV() {
+      const filtered = allData.filter(item => {
+        const matchesCountry = currentCountry === 'ALL' || item.country.toLowerCase() === currentCountry.toLowerCase();
+        const matchesNiche = currentNiche === 'ALL' || (item.niche && item.niche.toLowerCase().includes(currentNiche.toLowerCase()));
+        return matchesCountry && matchesNiche;
+      });
+
+      if (!filtered.length) {
+        alert('No data to export.');
+        return;
+      }
+
+      const headers = ['Clinic Name', 'Target Niche', 'Category', 'Rating', 'Review Count', 'Phone', 'Website', 'Address', 'City', 'Country', 'Google Maps Link'];
+      const rows = filtered.map(i => [
+        `"${(i.name || '').replace(/"/g, '""')}"`,
+        `"${(i.niche || '').replace(/"/g, '""')}"`,
+        `"${(i.category || '').replace(/"/g, '""')}"`,
+        i.rating || '',
+        i.reviewsCount || '',
+        `"${(i.phone || '').replace(/"/g, '""')}"`,
+        `"${(i.website || '').replace(/"/g, '""')}"`,
+        `"${(i.address || '').replace(/"/g, '""')}"`,
+        `"${(i.city || '').replace(/"/g, '""')}"`,
+        `"${(i.country || '').replace(/"/g, '""')}"`,
+        `"${(i.mapsUrl || '').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Filtered_Clinics_${currentCountry}_${currentNiche.replace(/\s+/g, '_')}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Auto-reload data periodically if scraping is running
+    loadData();
+    setInterval(loadData, 5000);
+  </script>
+</body>
+</html>

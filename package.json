@@ -1,0 +1,19 @@
+{
+  "name": "google_maps_scrapper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test_extract.js",
+  "scripts": {
+    "start": "node run_all.js",
+    "cli": "node cli.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "puppeteer-core": "^25.14.0",
+    "xlsx": "^0.18.5"
+  }
+}
